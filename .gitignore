@@ -1,0 +1,9 @@
+# editors
+/.vscode
+
+# bazel
+/MODULE.bazel.lock
+/bazel-bin
+/bazel-hue
+/bazel-out
+/bazel-testlogs
