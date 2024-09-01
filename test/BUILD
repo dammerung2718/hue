@@ -2,16 +2,19 @@ cc_test(
     name = "hueReadFile",
     srcs = ["hueReadFile.c"],
     deps = ["//huec:lib"],
+    timeout = "short",
 )
 
 cc_test(
-    name = "hueParseHelloWorld",
-    srcs = ["hueParseHelloWorld.c"],
+    name = "helloWorld",
+    srcs = ["helloWorld.c"],
     deps = ["//huec:lib"],
+    timeout = "short",
 )
 
 cc_test(
-    name = "hueEvalHelloWorld",
-    srcs = ["hueEvalHelloWorld.c"],
+    name = "add",
+    srcs = ["add.c"],
     deps = ["//huec:lib"],
+    timeout = "short",
 )

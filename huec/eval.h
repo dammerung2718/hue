@@ -2,7 +2,6 @@
 #define HUE_EVAL_H
 
 #include "ast.h"
-#include "val.h"
 
 const struct hueVal *const hueEval(const struct hueAst *const ast);
 

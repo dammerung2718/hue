@@ -14,7 +14,13 @@ const struct hueVal *const hueEval(const struct hueAst *const ast)
             return NULL;
         }
 
-        case HUE_STRING:
-            return hueValString(ast->string);
+        case HUE_BINOP: {
+            const struct hueVal *const lhs = hueEval(ast->binop.lhs);
+            const struct hueVal *const rhs = hueEval(ast->binop.rhs);
+            return hueValBinop(ast->binop.op, lhs, rhs);
+        }
+
+        case HUE_LITERAL:
+            return ast->literal;
     }
 }

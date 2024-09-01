@@ -4,30 +4,53 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct hueAst *hueAstPrint(const struct hueAst *const expr)
+const struct hueAst *const hueAstPrint(const struct hueAst *const expr)
 {
     assert(expr != NULL);
 
-    struct hueAst *const ast = malloc(sizeof(struct hueAst));
-    assert(ast != NULL);
+    const struct hueAst *const ptr = malloc(sizeof(struct hueAst));
+    assert(ptr != NULL);
 
-    ast->tag = HUE_PRINT;
-    ast->print = expr;
+    const struct hueAst ast = {
+        .tag = HUE_PRINT,
+        .print = expr,
+    };
+    memcpy((void*)ptr, &ast, sizeof(struct hueAst));
 
-    return ast;
+    return ptr;
 }
 
-struct hueAst *hueAstString(const char *const str)
+const struct hueAst *const hueAstBinop(const enum hueBinop op, const struct hueAst *const lhs, const struct hueAst *const rhs)
 {
-    assert(str != NULL);
+    assert(lhs != NULL);
+    assert(rhs != NULL);
 
-    struct hueAst *const ast = malloc(sizeof(struct hueAst));
-    assert(ast != NULL);
+    const struct hueAst *const ptr = malloc(sizeof(struct hueAst));
+    assert(ptr != NULL);
 
-    ast->tag = HUE_STRING;
-    ast->string = str;
+    const struct hueAst ast = {
+        .tag = HUE_BINOP,
+        .binop = { .op = op, .lhs = lhs, .rhs = rhs }
+    };
+    memcpy((void*)ptr, &ast, sizeof(struct hueAst));
 
-    return ast;
+    return ptr;
+}
+
+const struct hueAst *const hueAstLiteral(const struct hueVal *const val)
+{
+    assert(val != NULL);
+
+    const struct hueAst *const ptr = malloc(sizeof(struct hueAst));
+    assert(ptr != NULL);
+
+    const struct hueAst ast = {
+        .tag = HUE_LITERAL,
+        .literal = val,
+    };
+    memcpy((void*)ptr, &ast, sizeof(struct hueAst));
+
+    return ptr;
 }
 
 bool hueCmpAst(const struct hueAst *const lhs, const struct hueAst *const rhs)
@@ -43,7 +66,19 @@ bool hueCmpAst(const struct hueAst *const lhs, const struct hueAst *const rhs)
         case HUE_PRINT:
             return hueCmpAst(lhs->print, rhs->print);
 
-        case HUE_STRING:
-            return strcmp(lhs->string, rhs->string) == 0;
+        case HUE_BINOP:
+            if (lhs->binop.op != rhs->binop.op) {
+                return false;
+            }
+            if (!hueCmpAst(lhs->binop.lhs, rhs->binop.lhs)) {
+                return false;
+            }
+            if (!hueCmpAst(lhs->binop.rhs, rhs->binop.rhs)) {
+                return false;
+            }
+            return true;
+
+        case HUE_LITERAL:
+            return hueCmpVal(lhs->literal, rhs->literal);
     }
 }
